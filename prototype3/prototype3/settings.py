@@ -142,8 +142,9 @@ CKEDITOR_IMAGE_BACKEND = 'pillow'
 CKEDITOR_CONFIGS = {
     'default': {
         'extraPlugins': ','.join(
-            ['ckeditor_wiris'] ),
+            ['ckeditor_wiris','chart','image2'] ),
         'toolbar': 'full',
+        'skin':'office2013'
     },
 }
 
