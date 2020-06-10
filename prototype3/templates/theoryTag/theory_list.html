@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <h1>Theory List</h1>
+  <a href="add/"> Add </a>
+  {% if theory_list %}
+  <ul>
+    {% for theory in theory_list %}
+      <li>
+        {{ theory.concept }} ({{theory.subConcept}})  <a href="{{ theory.get_absolute_url }}">show</a> <a href="{{ theory.get_update_url}}">edit</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no theorys in the library.</p>
+  {% endif %}
+  <a href="/signout"> Logout </a>    
+{% endblock %}

@@ -1,0 +1,195 @@
+
+{% extends 'layout.html' %}
+{% block content %}.
+<form method="post" id="theoryTagForm" >
+    {% csrf_token %}
+    {{ form.media }}
+    <table>
+      {{ form.as_table }}
+    </table>
+    <button type="submit">Save</button>
+  </form>
+
+
+
+
+  <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+        $('[name="concept"]').empty()
+        $.ajax({
+            url: "{% url 'ajaxLoadConcepts' %}", 
+            data: {
+            },
+            success: (data)=> {  
+                $('[name="concept"]').html(data);
+            }
+        });
+        var Obj = document.getElementsByName('prerequisites')[0]; //any element to be fully replaced
+        var str = `<div name="prerequisiteContainer"><ul name="prerequisiteList"></ul><select name="prerequisitesChapter" ><option value="">---------</option><option value="5">Trigonometric Ratios, Functions, and Identities</option><option value="6">Trigonometric Equations</option><option value="7">Properties of triangle</option><option value="8">Inverse Trigonometric Functions</option><option value="9">Quadratic Equations</option><option value="10">Sequences and Series (Progressions)</option><option value="11">Binomial Theorem</option><option value="12">Permutation and Combination</option><option value="13">Complex Numbers</option><option value="14">Matrices and Determinants</option><option value="15">Probability</option><option value="16">Set Theory and Relations</option><option value="17">Mathematical Induction</option><option value="18">Functions</option><option value="19">Application of Derivatives</option><option value="20">Differential Coefficient </option><option value="21">Continuity and Differentiability</option><option value="22">Limits</option><option value="23">Indefinite Integration</option><option value="24">Definite Integration</option><option value="25">Differential Equation:</option><option value="26">Area Under Curves:</option><option value="27">Point and Straight Line</option><option value="28">Circle</option><option value="29">Vector</option><option value="30">Three Dimensional Geometrical System</option><option value="31">Ellipse</option><option value="32">Parabola</option><option value="33">Hyperbola</option><option value="34">Statistics</option><option value="35">Mathematical Reasoning</option></select><select name="prerequisitesConcept"></select><select name="prerequisitesSubConcept"></select><button name="sbt-prerequisite">Add</button></div>`;
+    
+        var tmpObj = document.createElement("div");
+        tmpObj.name='prerequisites'
+
+        tmpObj.innerHTML = '<!--THIS DATA SHOULD BE REPLACED-->';
+        ObjParent = Obj.parentNode; //Okey, element should be parented
+        ObjParent.replaceChild(tmpObj, Obj); //here we placing our temporary data instead of our target, so we can find it then and replace it into whatever we want to replace to
+        ObjParent.innerHTML = ObjParent.innerHTML.replace('<div><!--THIS DATA SHOULD BE REPLACED--></div>', str);
+        
+        Obj=document.getElementsByName('twinConcepts')[0]
+        str=`<div name="twinConceptsContainer"><ul name="twinConceptsList"></ul><select name="twinConceptsChapter" ><option value="">---------</option><option value="5">Trigonometric Ratios, Functions, and Identities</option><option value="6">Trigonometric Equations</option><option value="7">Properties of triangle</option><option value="8">Inverse Trigonometric Functions</option><option value="9">Quadratic Equations</option><option value="10">Sequences and Series (Progressions)</option><option value="11">Binomial Theorem</option><option value="12">Permutation and Combination</option><option value="13">Complex Numbers</option><option value="14">Matrices and Determinants</option><option value="15">Probability</option><option value="16">Set Theory and Relations</option><option value="17">Mathematical Induction</option><option value="18">Functions</option><option value="19">Application of Derivatives</option><option value="20">Differential Coefficient </option><option value="21">Continuity and Differentiability</option><option value="22">Limits</option><option value="23">Indefinite Integration</option><option value="24">Definite Integration</option><option value="25">Differential Equation:</option><option value="26">Area Under Curves:</option><option value="27">Point and Straight Line</option><option value="28">Circle</option><option value="29">Vector</option><option value="30">Three Dimensional Geometrical System</option><option value="31">Ellipse</option><option value="32">Parabola</option><option value="33">Hyperbola</option><option value="34">Statistics</option><option value="35">Mathematical Reasoning</option></select><select name="twinConceptsConcept"></select><select name="twinConceptsSubConcept"></select><button name="sbt-twinConcept">Add</button></div>`;
+        tmpObj = document.createElement("div");
+        tmpObj.name='twinConcepts'
+
+        tmpObj.innerHTML = '<!--THIS DATA SHOULD BE REPLACED-->';
+        ObjParent = Obj.parentNode; //Okey, element should be parented
+        ObjParent.replaceChild(tmpObj, Obj); //here we placing our temporary data instead of our target, so we can find it then and replace it into whatever we want to replace to
+        ObjParent.innerHTML = ObjParent.innerHTML.replace('<div><!--THIS DATA SHOULD BE REPLACED--></div>', str);
+
+        $('[name="prerequisitesChapter"]').change(()=>{
+            console.log("Fafafa")
+            $('[name="prerequisitesConcept"]').empty();
+            $.ajax({
+                url: "{% url 'ajaxLoadConcepts' %}", 
+                data: {
+                    'chapter' : $('[name="prerequisitesChapter"]').val()
+                },
+                success: (data)=> {  
+                    $('[name="prerequisitesConcept"]').html(data);
+                }
+            });
+        })
+         $('[name="prerequisitesConcept"]').change(()=>{
+            $('[name="prerequisitesSubConcept"]').empty()
+            $.ajax({
+                url: "{% url 'ajaxLoadSubConcepts' %}", 
+                data: {
+                    'concept': $('[name="prerequisitesConcept"]').val()
+                },
+                success: (data)=> {  
+                    console.log(data)
+                    $('[name="prerequisitesSubConcept"]').html(data);
+                }
+            });
+        })
+        prerequisiteObj=[]
+        $('[name="sbt-prerequisite"]').click(()=>{
+            prerequisiteObj.push( $('[name="prerequisitesSubConcept"]').val());
+            var ul = document.getElementsByName("prerequisiteList")[0];
+            var li = document.createElement("li");
+            var subConceptName="";
+            $.ajax({
+                url: "{% url 'subConcept-Name' %}",
+                data: {
+                    'subConcept' : $('[name="prerequisitesSubConcept"]').val()
+                },
+                success: (data)=>{
+                    console.log(data.subConceptName);
+
+            li.appendChild(document.createTextNode(data.subConceptName));
+                    subConceptName= data.subConceptName
+                }
+            })
+            ul.appendChild(li);
+            return false;
+        })
+
+
+        $('[name="twinConceptsChapter"]').change(()=>{
+        console.log("Fafafa")
+        $('[name="twinConceptsConcept"]').empty();
+        $.ajax({
+            url: "{% url 'ajaxLoadConcepts' %}", 
+            data: {
+                'chapter' : $('[name="twinConceptsChapter"]').val()
+            },
+            success: (data)=> {  
+                $('[name="twinConceptsConcept"]').html(data);
+            }
+        });
+        })
+        $('[name="twinConceptsConcept"]').change(()=>{
+
+            $('[name="twinConceptsSubConcept"]').empty()
+                $.ajax({
+                    url: "{% url 'ajaxLoadSubConcepts' %}", 
+                    data: {
+                        'concept': $('[name="twinConceptsConcept"]').val()
+                    },
+                    success: (data)=> {  
+                        console.log(data)
+                        $('[name="twinConceptsSubConcept"]').html(data);
+                    }
+                });
+        })
+        twinConceptObj=[]
+        $('[name="sbt-twinConcept"]').click(()=>{
+            twinConceptObj.push( $('[name="twinConceptsSubConcept"]').val());
+            var ul = document.getElementsByName("twinConceptsList")[0];
+            var li = document.createElement("li");
+            var subConceptName="";
+            $.ajax({
+                url: "{% url 'subConcept-Name' %}",
+                data: {
+                    'subConcept' : $('[name="twinConceptsSubConcept"]').val()
+                },
+                success: (data)=>{
+                    console.log(data.subConceptName);
+
+            li.appendChild(document.createTextNode(data.subConceptName));
+                    subConceptName= data.subConceptName
+                }
+            })
+            ul.appendChild(li);
+            return false;
+        })
+        
+
+    });
+        $('[name="concept"]').change(()=>{
+            $('[name="subConcept"]').empty()
+            $.ajax({
+                url: "{% url 'ajaxLoadSubConcepts' %}", 
+                data: {
+                    'concept': $('[name="concept"]').val()
+                },
+                success: (data)=> {  
+                    console.log(data)
+                    $('[name="subConcept"]').html(data);
+                }
+            });
+        })
+        $("#theoryTagForm").submit(()=>{
+            console.log("write back")
+            var Obj = document.getElementsByName('prerequisiteContainer')[0]; //any element to be fully replaced
+            var str = `<select name="prerequisites" required id="id_prerequisites" multiple></select>`
+            var tmpObj = document.createElement("div");
+            tmpObj.name='prerequisites'
+
+            tmpObj.innerHTML = '<!--THIS DATA SHOULD BE REPLACED-->';
+            ObjParent = Obj.parentNode; //Okey, element should be parented
+            ObjParent.replaceChild(tmpObj, Obj); //here we placing our temporary data instead of our target, so we can find it then and replace it into whatever we want to replace to
+            ObjParent.innerHTML = ObjParent.innerHTML.replace('<div><!--THIS DATA SHOULD BE REPLACED--></div>', str);
+            $('[name="prerequisites"]').val(prerequisiteObj);
+
+            Obj = document.getElementsByName('twinConceptsContainer')[0]; //any element to be fully replaced
+            str = `<select name="twinConcepts" required id="id_twinConcepts" multiple></select>`
+            var tmpObj = document.createElement("div");
+            tmpObj.name='prerequisites'
+
+            tmpObj.innerHTML = '<!--THIS DATA SHOULD BE REPLACED-->';
+            ObjParent = Obj.parentNode; //Okey, element should be parented
+            ObjParent.replaceChild(tmpObj, Obj); //here we placing our temporary data instead of our target, so we can find it then and replace it into whatever we want to replace to
+            ObjParent.innerHTML = ObjParent.innerHTML.replace('<div><!--THIS DATA SHOULD BE REPLACED--></div>', str);
+            $('[name="twinConcepts"]').val(twinConceptObj);
+            
+
+        });
+
+</script>
+
+
+{% endblock %}

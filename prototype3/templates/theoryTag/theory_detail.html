@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block content %}
+  <h1>Concept: {{ theory.concept }}</h1>
+    <h1>subConcept: {{theory.subConcept}}</h1>
+  <p><strong>theory:</strong> {{ theory.theory | safe }}</p> 
+  <p><strong>easyExampleQues1:</strong> {{ theory.easyExampleQues1 | safe }}</p> 
+  <p><strong>easyExampleSol1:</strong> {{ theory.easyExampleSol1 | safe }}</p>
+  <p><strong>easyExampleQues2:</strong> {{ theory.easyExampleQues2 | safe }}</p> 
+  <p><strong>easyExampleSol2:</strong> {{ theory.easyExampleSol2 | safe }}</p>
+  
+  <p><strong>Difficulty:</strong> {{ theory.difficulty }}</p>
+  <p><strong>Importance:</strong> {{ theory.importance }}</p> 
+  <p><strong>Duration:</strong> {{ theory.duration }} mins</p>  
+  <p><strong>Summary</strong>    {{theory.summary | safe}} </p> 
+
+ 
+{% endblock %}
